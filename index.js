@@ -4,7 +4,6 @@ const { DateTime } = require("luxon");
 const express = require("express");
 const axios = require("axios");
 const cheerio = require("cheerio");
-const { HfInference } = require("@huggingface/inference");
 
 const CUEVANA_URL = "https://wv4.cuevana.online";
 const bot = new Client({
