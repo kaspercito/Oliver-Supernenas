@@ -13,7 +13,6 @@
     "node-fetch": "^3.3.0",
     "dotenv": "^16.0.0",
     "axios": "^1.6.0",
-    "cheerio": "^1.0.0-rc.12",
     "spotify-web-api-node": "^5.0.2",
     "@discordjs/voice": "^0.16.0",
     "@discordjs/opus": "^0.8.0",
