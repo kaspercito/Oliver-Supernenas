@@ -442,8 +442,6 @@ bot.on("messageCreate", async (message) => {
       .setTitle("Comandos disponibles")
       .setDescription("Aquí están los comandos que puedes usar:")
       .addFields(
-        { name: ".chat <mensaje>", value: "Habla con el bot para obtener respuestas útiles." },
-        { name: ".imagen <descripción>", value: "Genera una imagen basada en la descripción proporcionada." },
         { name: ".recomendar", value: "Obtén una lista de películas recomendadas por género." },
         { name: ".pelicula <nombre>", value: "Busca una película en Cuevana y recibe un enlace directo." },
         { name: ".trivia", value: "Inicia una pregunta de trivia; el primero en responder correctamente gana." },
