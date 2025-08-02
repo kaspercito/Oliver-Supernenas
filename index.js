@@ -290,47 +290,6 @@ async function manejarTrivia(message) {
   }
 }
 
-async function getChatResponse(prompt) {
-  try {
-    const enhancedPrompt = `Eres un asistente útil para un servidor de Discord. Responde en español de manera clara y concisa. Si la pregunta está relacionada con juegos, enfócate en ese tema; si no, responde según el contexto de la vida real: ${prompt}`;
-    console.log(`🔹 Enviando a Hugging Face: ${enhancedPrompt}`);
-    const response = await hf.textGeneration({
-      model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
-      inputs: enhancedPrompt,
-      parameters: {
-        max_new_tokens: 200,
-        temperature: 0.7,
-      },
-    });
-    const respuesta = response.generated_text.replace(enhancedPrompt, "").trim();
-    console.log("🔹 Respuesta recibida:", respuesta);
-    return respuesta || "No tengo una respuesta para eso.";
-  } catch (error) {
-    console.error("❌ Error en Hugging Face Chat:", error.message);
-    return "Error al obtener la respuesta, espera un momento.";
-  }
-}
-
-async function generateImage(prompt) {
-  try {
-    console.log(`🖼️ Generando imagen para: ${prompt}`);
-    const imageBlob = await hf.textToImage({
-      model: "stabilityai/stable-diffusion-2-1",
-      inputs: `${prompt}, photorealistic, ultra-realistic, high detail`,
-      parameters: {
-        negative_prompt: "cartoon, animated, blurry, low quality, game-like",
-        num_inference_steps: 50,
-        guidance_scale: 7.5,
-      },
-    });
-    console.log("🖼️ Imagen generada (blob recibido)");
-    return { files: [{ attachment: Buffer.from(await imageBlob.arrayBuffer()), name: "imagen.png" }] };
-  } catch (error) {
-    console.error("❌ Error en Hugging Face Imagen:", error.message);
-    return "⏳ Límite de generación de imágenes alcanzado. Por favor, espera un minuto y prueba de nuevo.";
-  }
-}
-
 async function finalizarSorteo(sorteoId, mensajeSorteo, participantes, premio) {
   const sorteoActivo = sorteosActivos.get(sorteoId);
   if (sorteoActivo && sorteoActivo.intervalo) {
@@ -457,36 +416,6 @@ bot.on("messageCreate", async (message) => {
       .setTimestamp();
 
     return message.reply({ embeds: [helpEmbed] });
-  }
-
-  if (command === "chat") {
-    const prompt = args.slice(1).join(" ").trim();
-    if (!prompt) return message.reply("❌ Debes escribir un mensaje después de `.chat`.");
-    const loadingMessage = await message.reply("⏳ Generando respuesta, un momento...");
-    try {
-      const response = await getChatResponse(prompt);
-      await loadingMessage.edit(response);
-    } catch (error) {
-      console.error("❌ Error en el chat:", error.message);
-      await loadingMessage.edit("❌ Hubo un error al obtener la respuesta.");
-    }
-  }
-
-  if (command === "imagen") {
-    const prompt = args.slice(1).join(" ").trim();
-    if (!prompt) return message.reply("❌ Debes escribir una descripción después de `.imagen`.");
-    const loadingMessage = await message.reply("⏳ Generando imagen, por favor espera...");
-    try {
-      const imageResult = await generateImage(prompt);
-      if (imageResult.files) {
-        await loadingMessage.edit({ content: "Aquí está tu imagen:", files: imageResult.files });
-      } else {
-        await loadingMessage.edit(imageResult);
-      }
-    } catch (error) {
-      console.error("❌ Error generando imagen:", error.message);
-      await loadingMessage.edit("❌ Hubo un error al generar la imagen.");
-    }
   }
 
   if (command === "recomendar") {
