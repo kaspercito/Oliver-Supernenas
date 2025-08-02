@@ -1,8 +1,12 @@
+const { File } = require('node:buffer');
+global.File = File; // Polyfill for File object to resolve undici error
+
 require("dotenv").config();
 const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
 const { DateTime } = require("luxon");
 const express = require("express");
 const axios = require("axios");
+const { JSDOM } = require("jsdom"); // Replaced cheerio with jsdom
 
 const CUEVANA_URL = "https://wv4.cuevana.online";
 const bot = new Client({
